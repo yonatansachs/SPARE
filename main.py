@@ -19,7 +19,7 @@ parser.add_argument('--layers', type=int, default=1, help='the number of gnn lay
 parser.add_argument('--dropout', type=float, default=0.2)
 
 parser.add_argument('--epochs', type=int, default=20)
-parser.add_argument('--num-workers', type=int, default=32)
+parser.add_argument('--num-workers', type=int, default=4)
 parser.add_argument('--batch_size', type=int, default=100)
 parser.add_argument('--lr', type=float, default=0.001, help='learning rate.')
 parser.add_argument('--lr_dc', type=float, default=0.1, help='learning rate decay')

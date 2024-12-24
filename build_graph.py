@@ -70,13 +70,13 @@ def build_adj(opt, num_node, verbose=True):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', default='sample', help='tmall/lastfm/retailrocket')
+    parser.add_argument('--dataset', default='tmall', help='tmall/lastfm/retailrocket')
     parser.add_argument('--filter', type=int, default=0,
                         help='Filter out unreliable edges below threshold.')
     parser.add_argument('--spare', type=int, default=1, help='Create adj based on shortest paths.')
     parser.add_argument('--limit', type=float, default=200, help='Max. search depth in dijsktra.')
     opt = parser.parse_args()
-
+    num_node = 0
     if opt.dataset == 'tmall':
         opt.limit = 190 # max: 197
         num_node = 40727
