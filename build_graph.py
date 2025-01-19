@@ -17,9 +17,9 @@ def build_adj(opt, num_node, verbose=True):
             item_i = sess[i]
             item_j = sess[i + 1]
             adj[item_i, item_j] += 1
-    
+
     if verbose: print("max. weight: ", adj.max())
-    
+
     # filter out unreliable edges
     adj = np.where(adj <= opt.filter, 0, adj)
 
@@ -78,14 +78,14 @@ if __name__ == '__main__':
     opt = parser.parse_args()
     num_node = 0
     if opt.dataset == 'tmall':
-        opt.limit = 190 # max: 197
+        opt.limit = 190  # max: 197
         num_node = 40727
     elif opt.dataset == 'retailrocket':
-        opt.limit = 300 # max: 331
+        opt.limit = 300  # max: 331
         num_node = 36968
     elif opt.dataset == 'lastfm':
         num_node = 38615
-        opt.limit = 1526 # max: 1526
+        opt.limit = 1526  # max: 1526
 
     print(opt)
     adj, adj_sparse = build_adj(opt, num_node)

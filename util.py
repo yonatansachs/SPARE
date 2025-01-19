@@ -78,7 +78,7 @@ def init_seed(seed=None):
     random.seed(seed)
 
     return seed
-        
+
 
 class DataSampler(Dataset):
     def __init__(self, opt, sessions, max_len, num_node, train=True):
@@ -158,16 +158,17 @@ class DataSampler(Dataset):
         elif self.similarity == 'levenshtein':
             sims = []
             for sess in sessions:
-                sims.append([-dameraulevenshtein.damerau_levenshtein_distance(sess, neg_sess) for neg_sess in neg_sessions])
+                sims.append(
+                    [-dameraulevenshtein.damerau_levenshtein_distance(sess, neg_sess) for neg_sess in neg_sessions])
             return np.array(sims).sum(axis=0)
         elif self.similarity == 'bleu':
             return [bleu_score.sentence_bleu(sessions,
-                                            neg_sess,
-                                            smoothing_function=SmoothingFunction().method7,
-                                            # weights=[0.25, 0.25, 0.25, 0.25] # TODO
-                                            weights=[0.5, 0.3, 0.15, 0.05]
-                                            )
-                   for neg_sess in neg_sessions]
+                                             neg_sess,
+                                             smoothing_function=SmoothingFunction().method7,
+                                             # weights=[0.25, 0.25, 0.25, 0.25] # TODO
+                                             weights=[0.5, 0.3, 0.15, 0.05]
+                                             )
+                    for neg_sess in neg_sessions]
 
     def get_neg_sessions(self, session_id, pos_ids, pos_last_items):
         session = self.sessions[session_id]
@@ -191,7 +192,8 @@ class DataSampler(Dataset):
         if self.opt.dataset == 'lastfm' and len(sess_item_idx) > self.num_subsample:
             sess_item_idx = random.sample(sess_item_idx, self.num_subsample)
 
-        candidate_neg_ids = candidate_neg_ids + [idx for idx in sess_item_idx if self.targets[idx] != self.targets[session_id]]
+        candidate_neg_ids = candidate_neg_ids + [idx for idx in sess_item_idx if
+                                                 self.targets[idx] != self.targets[session_id]]
 
         # reduce complexity with sampling random neg sessions
         if len(candidate_neg_ids) > self.num_subsample:
@@ -201,11 +203,13 @@ class DataSampler(Dataset):
         candidate_neg_ids = [idx for idx in candidate_neg_ids if not set(self.sessions[idx]).issubset(set(session))]
 
         # kick out same session with same last items as pos & anchor
-        candidate_neg_ids = [idx for idx in candidate_neg_ids if not self.sessions[idx][-1] in pos_last_items + [session[-1]]]
+        candidate_neg_ids = [idx for idx in candidate_neg_ids if
+                             not self.sessions[idx][-1] in pos_last_items + [session[-1]]]
 
         if len(candidate_neg_ids) < self.k:
             # random fill up
-            neg_ids = candidate_neg_ids + random.choices(range(0, len(self.sessions)), k=self.k - len(candidate_neg_ids))
+            neg_ids = candidate_neg_ids + random.choices(range(0, len(self.sessions)),
+                                                         k=self.k - len(candidate_neg_ids))
         else:
             candidate_neg_sessions = [self.sessions[idx] for idx in candidate_neg_ids]
             sim = self.session_similarity(session, pos_sessions, candidate_neg_sessions)
@@ -225,9 +229,8 @@ class DataSampler(Dataset):
 
         pos_last_items, neg_last_items, neg_targets = None, None, None
         if self.train and self.opt.cl:
-                pos_last_items, pos_ids = self.get_pos_last_items(index)
-                neg_last_items, neg_targets = self.get_neg_sessions(index, pos_ids, pos_last_items)
-
+            pos_last_items, pos_ids = self.get_pos_last_items(index)
+            neg_last_items, neg_targets = self.get_neg_sessions(index, pos_ids, pos_last_items)
 
         return {"alias_inputs": torch.tensor(alias_inputs),
                 "items": torch.tensor(items),
